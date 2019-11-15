@@ -1,6 +1,6 @@
 {
-  "name": "@editorjs/image",
-  "version": "2.3.3",
+  "name": "@bfrow/image",
+  "version": "2.4.0",
   "keywords": [
     "codex editor",
     "tool",
@@ -10,7 +10,7 @@
   ],
   "description": "Image Tool for Editor.js",
   "license": "MIT",
-  "repository": "https://github.com/editor-js/image",
+  "repository": "https://github.com/bfrow-tech/image",
   "main": "./dist/bundle.js",
   "scripts": {
     "build": "webpack --mode production",
