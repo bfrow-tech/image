@@ -1,5 +1,8 @@
 {
-  "name": "@bfrow/image",
+  "name": "@bfrow-tech/image",
+  "publishConfig": { 
+    "registry": "https://npm.pkg.github.com/bfrow-tech" 
+  },
   "version": "2.4.0",
   "keywords": [
     "codex editor",
@@ -10,15 +13,15 @@
   ],
   "description": "Image Tool for Editor.js",
   "license": "MIT",
-  "repository": "https://github.com/bfrow-tech/image",
+  "repository": "git://github.com/bfrow-tech/image.git",
   "main": "./dist/bundle.js",
   "scripts": {
     "build": "webpack --mode production",
     "build:dev": "webpack --mode development --watch"
   },
   "author": {
-    "name": "CodeX",
-    "email": "team@ifmo.su"
+    "name": "BFrow Team",
+    "email": "au@bfrow.com"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
