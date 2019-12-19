@@ -1,4 +1,6 @@
 import buttonIcon from './svg/button-icon.svg';
+import logoType from './svg/logoType.svg';
+import rotate from './svg/rotate.svg';
 
 /**
  * Class for working with UI:
@@ -21,7 +23,11 @@ export default class Ui {
       imageContainer: make('div', [ this.CSS.imageContainer ]),
       fileButton: this.createFileButton(),
       imageEl: undefined,
-      imagePreloader: make('div', this.CSS.imagePreloader)
+      imagePreloader: make('div', this.CSS.imagePreloader),
+      wrapperLoader: make('div', 'wrapperLoaderIMAGE_UI'),
+      caption: make('div', [this.CSS.input, this.CSS.caption], {
+        contentEditable: true
+      })
     };
 
     /**
@@ -30,11 +36,16 @@ export default class Ui {
      *    <image-container>
      *      <image-preloader />
      *    </image-container>
+     *    <caption />
      *    <select-file-button />
      *  </wrapper>
      */
-    this.nodes.imageContainer.appendChild(this.nodes.imagePreloader);
+    this.nodes.caption.dataset.placeholder = this.config.captionPlaceholder;
+    this.nodes.imageContainer.append(this.nodes.imagePreloader);
+    this.nodes.wrapperLoader.innerHTML = rotate + logoType;
+    this.nodes.imagePreloader.appendChild(this.nodes.wrapperLoader);
     this.nodes.wrapper.appendChild(this.nodes.imageContainer);
+    this.nodes.wrapper.appendChild(this.nodes.caption);
     this.nodes.wrapper.appendChild(this.nodes.fileButton);
   }
 
@@ -55,7 +66,8 @@ export default class Ui {
       wrapper: 'image-tool',
       imageContainer: 'image-tool__image',
       imagePreloader: 'image-tool__image-preloader',
-      imageEl: 'image-tool__image-picture'
+      imageEl: 'image-tool__image-picture',
+      caption: 'image-tool__caption'
     };
   };
 
@@ -106,11 +118,8 @@ export default class Ui {
 
   /**
    * Shows uploading preloader
-   * @param {string} src - preview source
    */
-  showPreloader(src) {
-    this.nodes.imagePreloader.style.backgroundImage = `url(${src})`;
-
+  showPreloader() {
     this.toggleStatus(Ui.status.UPLOADING);
   }
 
@@ -118,7 +127,6 @@ export default class Ui {
    * Hide uploading preloader
    */
   hidePreloader() {
-    this.nodes.imagePreloader.style.backgroundImage = '';
     this.toggleStatus(Ui.status.EMPTY);
   }
 
@@ -164,9 +172,6 @@ export default class Ui {
       eventName = 'loadeddata';
     }
 
-    // to prevent already upload image for dragging
-    attributes.draggable = false;
-
     /**
      * Compose tag with defined attributes
      * @type {Element}
@@ -188,6 +193,16 @@ export default class Ui {
     });
 
     this.nodes.imageContainer.appendChild(this.nodes.imageEl);
+  }
+
+  /**
+   * Shows caption input
+   * @param {string} text - caption text
+   */
+  fillCaption(text) {
+    if (this.nodes.caption) {
+      this.nodes.caption.innerHTML = text;
+    }
   }
 
   /**
