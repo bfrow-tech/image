@@ -25,7 +25,7 @@ export default class Ui {
       imageEl: undefined,
       imagePreloader: make('div', this.CSS.imagePreloader),
       wrapperLoader: make('div', 'wrapperLoaderIMAGE_UI'),
-      caption: make('div', [this.CSS.input, this.CSS.caption], {
+      imageLink: make('div', [this.CSS.input, this.CSS.imageLink], {
         contentEditable: true
       })
     };
@@ -36,16 +36,16 @@ export default class Ui {
      *    <image-container>
      *      <image-preloader />
      *    </image-container>
-     *    <caption />
+     *    <imageLink />
      *    <select-file-button />
      *  </wrapper>
      */
-    this.nodes.caption.dataset.placeholder = this.config.captionPlaceholder;
+    this.nodes.imageLink.dataset.placeholder = this.config.imageLinkPlaceholder;
     this.nodes.imageContainer.append(this.nodes.imagePreloader);
     this.nodes.wrapperLoader.innerHTML = rotate + logoType;
     this.nodes.imagePreloader.appendChild(this.nodes.wrapperLoader);
     this.nodes.wrapper.appendChild(this.nodes.imageContainer);
-    this.nodes.wrapper.appendChild(this.nodes.caption);
+    this.nodes.wrapper.appendChild(this.nodes.imageLink);
     this.nodes.wrapper.appendChild(this.nodes.fileButton);
   }
 
@@ -67,7 +67,7 @@ export default class Ui {
       imageContainer: 'image-tool__image',
       imagePreloader: 'image-tool__image-preloader',
       imageEl: 'image-tool__image-picture',
-      caption: 'image-tool__caption'
+      imageLink: 'image-tool__imageLink'
     };
   };
 
@@ -196,12 +196,12 @@ export default class Ui {
   }
 
   /**
-   * Shows caption input
-   * @param {string} text - caption text
+   * Shows image link input
+   * @param {string} text - image link text
    */
-  fillCaption(text) {
-    if (this.nodes.caption) {
-      this.nodes.caption.innerHTML = text;
+  fillImageLink(text) {
+    if (this.nodes.imageLink) {
+      this.nodes.imageLink.innerHTML = text;
     }
   }
 
