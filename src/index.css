@@ -120,6 +120,10 @@
     }
 
     &[contentEditable="true"][data-placeholder]:empty {
+      &::after {
+        display: none;
+      }
+
       &::before {
         display: block;
       }
