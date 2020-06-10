@@ -3,9 +3,9 @@
         class="line"
         cx="50"
         cy="50"
-        r="20"
+        r="25"
         fill="none"
-        strokeWidth="2"
+        strokeWidth="4"
         strokeMiterlimit="10"
     ></circle>
 </svg>
