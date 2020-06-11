@@ -3,7 +3,7 @@
         class="line"
         cx="50"
         cy="50"
-        r="25"
+        r="20"
         fill="none"
         strokeWidth="4"
         strokeMiterlimit="10"
