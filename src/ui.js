@@ -2,6 +2,8 @@ import buttonIcon from './svg/button-icon.svg';
 import logoType from './svg/logoType.svg';
 import rotate from './svg/rotate.svg';
 
+import { addOverlay, getTags, toggleTagsDisplay } from './imageTagger';
+
 /**
  * Class for working with UI:
  *  - rendering base structure
@@ -47,6 +49,38 @@ export default class Ui {
     this.nodes.wrapper.appendChild(this.nodes.imageContainer);
     this.nodes.wrapper.appendChild(this.nodes.imageLink);
     this.nodes.wrapper.appendChild(this.nodes.fileButton);
+
+    // Add click event to imageContainer
+    this.nodes.imageContainer.addEventListener('click', this.toggleImageTags.bind(this)());
+    this.nodes.imageContainer.addEventListener(
+      'dblclick',
+      this.tagImage.bind(this)
+    );
+  }
+
+  /**
+   * start image tagging process by adding an overlay
+   */
+  tagImage() {
+    if (this.currentStatus === 'FILLED') {
+      const hasImageOverlay = this.nodes.imageContainer.querySelector('.image-overlay');
+
+      if (hasImageOverlay) {
+        hasImageOverlay.remove();
+      } else {
+        const { height, width } = this.nodes.imageContainer.querySelector('img');
+        const tagOverlay = addOverlay(height, width);
+
+        this.nodes.imageContainer.appendChild(tagOverlay);
+      }
+    }
+  }
+
+  // eslint-disable-next-line require-jsdoc
+  toggleImageTags() {
+    const tags = getTags();
+
+    return toggleTagsDisplay(tags);
   }
 
   /**
@@ -87,6 +121,21 @@ export default class Ui {
   }
 
   /**
+   * Get the current UI status
+   */
+  get currentStatus() {
+    for (const statusType in Ui.status) {
+      const hasStatusType = this.nodes.wrapper.classList.contains(
+        `${this.CSS.wrapper}--${Ui.status[statusType]}`
+      );
+
+      if (hasStatusType) {
+        return statusType;
+      }
+    }
+  }
+
+  /**
    * @param {ImageToolData} toolData
    * @return {HTMLDivElement}
    */
@@ -107,7 +156,8 @@ export default class Ui {
   createFileButton() {
     let button = make('div', [ this.CSS.button ]);
 
-    button.innerHTML = this.config.buttonContent || `${buttonIcon} Upload your image`;
+    button.innerHTML =
+      this.config.buttonContent || `${buttonIcon} Upload your image`;
 
     button.addEventListener('click', () => {
       this.onSelectFile();
@@ -212,7 +262,10 @@ export default class Ui {
   toggleStatus(status) {
     for (const statusType in Ui.status) {
       if (Ui.status.hasOwnProperty(statusType)) {
-        this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${Ui.status[statusType]}`, status === Ui.status[statusType]);
+        this.nodes.wrapper.classList.toggle(
+          `${this.CSS.wrapper}--${Ui.status[statusType]}`,
+          status === Ui.status[statusType]
+        );
       }
     }
   }
@@ -223,7 +276,10 @@ export default class Ui {
    * @param {boolean} status - true for enable, false for disable
    */
   applyTune(tuneName, status) {
-    this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${tuneName}`, status);
+    this.nodes.wrapper.classList.toggle(
+      `${this.CSS.wrapper}--${tuneName}`,
+      status
+    );
   }
 }
 

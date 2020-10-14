@@ -47,6 +47,8 @@ import Tunes from './tunes';
 import ToolboxIcon from './svg/toolbox.svg';
 import Uploader from './uploader';
 
+import './imageTagger.css';
+
 /**
  * @typedef {object} ImageConfig
  * @description Config supported by Tool
