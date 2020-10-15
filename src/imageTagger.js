@@ -1,65 +1,10 @@
-/**
- * startTaggingProcess
- * addImageOverlay
- *  - set overlay height and width to current image height and width
- *  - append overlay to the main image wrapper
- *  - add click event to overlay for selecting tag positions (fires a setTagPosition function)
- * setTagPosition
- *  - get top and left postion of mouse with getBoundingClientRect API
- *  - render buttons for selecting they type of tag (Tag User/Tag Link)
- * renderTagTypeBtns
- *  - Tag user button
- *  - Tag link button
- *  - Each button with a click event that renders an input specific to each selections
- * renderTagInput
- *  - create and append a text input into overlay wrapper element
- *  - create a dropdown element and make it hidden by default
- *  - add keydown event to text input
- *  - if type of tag is "user" make dropdown visible
- *  - remove existing dropdown child elements
- *  - filter users array based on the input value (use regex to match and sanitize input value)
- *  - map through filtered result and display child list elements of the dropdown
- *  - add click event to each list child element of the dropdown fire createUserTag
- *  - if type of tag is link fire createLinkTag function
- *  - if user hits enter fire createUserTag or createLinkTag depending on the type of tag
- * createUserTag
- *  - creates a tag object comprised of:
- *      - username
- *      - user's profile photo
- *      - selected postion
- *      - type of tag (user/link)
- *  - renders tag with created tag object (fires renderTag method)
- * createLinkTag
- *  - creates a tag object comprised of:
- *      - title
- *      - link icon
- *      - selected postion
- *      - type of tag (link)
- *  - renders tag with created tag object (fires renderTag method)
- * renderTag
- *  - make an array of created tooltip tag Elements
- *  - create a tooltip ui element
- *  - set top and left postion to tag object top and left postion values
- *  - push tooltip element to tagElements array
- *  - remove no-display css class from all created tag elements
- *
- * toggleTagsDisplay
- *  - on click of image show/hide tags
- * removeTags
- *  - deletes tag
- */
-
 import { make } from './ui';
 
-const users = [];
+let users = [];
+let userEndpoint;
 const tagPosition = {};
 let tags = [];
-
-// util functions
-const removeSpecialChars = (s) => {
-  // eslint-disable-next-line no-useless-escape
-  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-};
+let overlayElement;
 
 const removeAllChildElements = (parentElement) => {
   while (parentElement.firstChild) {
@@ -73,7 +18,7 @@ export const addOverlay = (height, width) => {
   });
 
   overlay.addEventListener('click', setTagPosition);
-
+  overlayElement = overlay;
   return overlay;
 };
 
@@ -82,8 +27,8 @@ const setTagPosition = (e) => {
   const { currentTarget, clientX, clientY } = e;
   let rect = currentTarget.getBoundingClientRect();
 
-  console.log(parseInt(currentTarget.style.width, 10));
-  console.log(Math.floor(clientX - rect.left));
+  // console.log(parseInt(currentTarget.style.width, 10));
+  // console.log(Math.floor(clientX - rect.left));
   tagPosition.top = Math.floor(clientY - rect.top);
   tagPosition.left = Math.floor(clientX - rect.left);
 
@@ -148,8 +93,6 @@ const makeLinkTagInput = (e) => {
     type: 'text',
     autofocus: 'autofocus'
   });
-  // button -> buttonWrapper -> overlay
-  const overlayElement = e.currentTarget.parentElement.parentElement;
 
   tagInput.addEventListener('keydown', ({ key }) => {
     if (key === 'Enter') {
@@ -160,24 +103,15 @@ const makeLinkTagInput = (e) => {
       };
 
       tags.push(currentTag);
-      console.log({ tags });
-      renderTags(overlayElement);
+      renderTags();
     }
   });
 
   // click event bubbling resets tag position
   tagInput.addEventListener('click', (event) => event.stopPropagation());
 
-  // append to overlay el
   overlayElement.appendChild(tagInput);
 };
-
-const filterUsers = (val) =>
-  users.filter((u) => {
-    const matchVal = new RegExp(removeSpecialChars(val), 'i');
-
-    return u.fullName.match(matchVal);
-  });
 
 const makeUserTagInput = (e) => {
   e.stopPropagation();
@@ -188,52 +122,51 @@ const makeUserTagInput = (e) => {
   const dropdown = make('div', 'dropdown');
 
   tagInput.addEventListener('keydown', renderDropdown(dropdown));
+
   // click event bubbling resets tag position
   tagInput.addEventListener('click', (event) => event.stopPropagation());
 
-  return tagInput;
+  overlayElement.appendChild(tagInput);
 };
 
 const renderDropdown = (dropdownWrapper) => {
-  return (e) => {
+  return async (e) => {
     removeAllChildElements(dropdownWrapper);
+    const results = await searchUsers(e.currentTarget.value);
 
-    const filteredUsers = filterUsers(e.currentTarget.value);
-    const dropdownItems = filteredUsers.map((u) => makeDropdownItems(u));
+    const dropdownItems = results.map((u) => makeDropdownItems(u));
 
     dropdownWrapper.append(...dropdownItems);
+
+    overlayElement.appendChild(dropdownWrapper);
   };
 };
 
 const makeDropdownItems = (user) => {
+  const src = user.image ? user.image.small : '';
   const dropdownItem = make('li');
-  const dropdownImage = make('img', 'dropdown-img', { src: user.thumbnail });
-  const fullName = make('span', 'full-name', { textContent: user.fullName });
-  const username = make('span', 'username', { textContent: user.username });
+  const dropdownImage = make('img', 'dropdown-img', { src });
+  const fullName = make('span', 'full-name', { textContent: user.displayName });
+  const username = make('span', 'username', { textContent: user.nickname });
 
   dropdownItem.append(dropdownImage, fullName, username);
-  dropdownItem.addEventListener('click', selectUser);
+  dropdownItem.addEventListener('click', selectUser(user));
 
   return dropdownItem;
 };
 
-const selectUser = (e) => {
+const selectUser = ({ displayName, nickname, image }) => (e) => {
   e.stopPropagation();
-  const { querySelector } = e.currentTarget;
-  const fullName = querySelector('.full-name').innerText;
-  const username = querySelector('.username').innerText;
-  const thumbnail = querySelector('img').src;
-
-  const currentTag = {
-    top: 20, // hardcoded for now
-    left: 80, // hardcoded for now
+  const tag = {
+    ...tagPosition,
     tagType: 'user',
-    title: fullName,
-    thumbnail,
-    username
+    title: displayName,
+    username: nickname,
+    thumbnail: image.small
   };
 
-  renderTags(currentTag);
+  tags.push(tag);
+  renderTags(overlayElement);
 };
 
 const removeTag = (id) => {
@@ -244,11 +177,11 @@ const removeTag = (id) => {
   };
 };
 
-const renderTags = (overlay) => {
+const renderTags = () => {
   const tagElements = tags.map((t) => makeTag(t));
 
-  overlay.parentElement.append(...tagElements);
-  overlay.remove();
+  overlayElement.parentElement.append(...tagElements);
+  overlayElement.remove();
 };
 
 export const getTags = () => tags;
@@ -259,4 +192,16 @@ export const toggleTagsDisplay = (currentTags) => (e) => {
   displayedTags.forEach((t) =>
     t.classList.toggle('no-display', !t.classList.contains('no-display'))
   );
+};
+
+export const initializeUserData = (u) => {
+  userEndpoint = u.endpoint;
+  users = u.data;
+};
+
+const searchUsers = async (searchValue) => {
+  const endpoint = `${userEndpoint}?query=${searchValue}&limit=10&page=1`;
+  const { result: { data } } = await fetch(endpoint).then(res => res.json());
+
+  return data;
 };

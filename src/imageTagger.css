@@ -82,9 +82,8 @@
 }
 
 .dropdown {
-  display: none;
   border-top: none;
-  top: 67%;
+  top: 60%;
   transform: translate(-50%, -35%);
   width: 395px !important;
   height: 150px;
@@ -105,8 +104,9 @@
 }
 
 .dropdown li img {
-  height: 30px;
-  width: 30px;
+  height: 40px;
+  width: 40px;
+  margin-left: 5px;
   border-radius: 50%;
 }
 

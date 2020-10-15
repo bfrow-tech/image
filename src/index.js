@@ -109,7 +109,8 @@ export default class ImageTool {
       types: config.types || 'image/*',
       imageLinkPlaceholder: config.imageLinkPlaceholder || 'Add a link to the image if required',
       buttonContent: config.buttonContent || '',
-      uploader: config.uploader || undefined
+      uploader: config.uploader || undefined,
+      users: config.users || {}
     };
 
     /**

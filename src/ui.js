@@ -2,7 +2,7 @@ import buttonIcon from './svg/button-icon.svg';
 import logoType from './svg/logoType.svg';
 import rotate from './svg/rotate.svg';
 
-import { addOverlay, getTags, toggleTagsDisplay } from './imageTagger';
+import { addOverlay, getTags, toggleTagsDisplay, initializeUserData } from './imageTagger';
 
 /**
  * Class for working with UI:
@@ -56,6 +56,9 @@ export default class Ui {
       'dblclick',
       this.tagImage.bind(this)
     );
+
+    // Initialize user data for image tagging
+    initializeUserData(this.config.users);
   }
 
   /**
