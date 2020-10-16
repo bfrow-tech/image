@@ -2,8 +2,6 @@ import buttonIcon from './svg/button-icon.svg';
 import logoType from './svg/logoType.svg';
 import rotate from './svg/rotate.svg';
 
-import { addOverlay, getTags, toggleTagsDisplay, initializeUserData } from './imageTagger';
-
 /**
  * Class for working with UI:
  *  - rendering base structure
@@ -49,41 +47,6 @@ export default class Ui {
     this.nodes.wrapper.appendChild(this.nodes.imageContainer);
     this.nodes.wrapper.appendChild(this.nodes.imageLink);
     this.nodes.wrapper.appendChild(this.nodes.fileButton);
-
-    // Add click event to imageContainer
-    this.nodes.imageContainer.addEventListener('click', this.toggleImageTags.bind(this)());
-    this.nodes.imageContainer.addEventListener(
-      'dblclick',
-      this.tagImage.bind(this)
-    );
-
-    // Initialize user data for image tagging
-    initializeUserData(this.config.users);
-  }
-
-  /**
-   * start image tagging process by adding an overlay
-   */
-  tagImage() {
-    if (this.currentStatus === 'FILLED') {
-      const hasImageOverlay = this.nodes.imageContainer.querySelector('.image-overlay');
-
-      if (hasImageOverlay) {
-        hasImageOverlay.remove();
-      } else {
-        const { height, width } = this.nodes.imageContainer.querySelector('img');
-        const tagOverlay = addOverlay(height, width);
-
-        this.nodes.imageContainer.appendChild(tagOverlay);
-      }
-    }
-  }
-
-  // eslint-disable-next-line require-jsdoc
-  toggleImageTags() {
-    const tags = getTags();
-
-    return toggleTagsDisplay(tags);
   }
 
   /**

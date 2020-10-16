@@ -48,6 +48,7 @@ import ToolboxIcon from './svg/toolbox.svg';
 import Uploader from './uploader';
 
 import './imageTagger.css';
+import { initImageTagging } from './imageTagger';
 
 /**
  * @typedef {object} ImageConfig
@@ -97,6 +98,7 @@ export default class ImageTool {
    */
   constructor({ data, config, api }) {
     this.api = api;
+    this.imageTags = data.imageTags || [];
 
     /**
      * Tool's initial config
@@ -146,6 +148,17 @@ export default class ImageTool {
     });
 
     /**
+     * Initialize image tagging feature
+     */
+    initImageTagging({
+      uiInstance: this.ui,
+      users: this.config.users || {},
+      addTag: this.addImageTag.bind(this),
+      getTags: () => this.imageTags,
+      removeImageTag: this.removeImageTag.bind(this)
+    });
+
+    /**
      * Set saved state
      */
     this._data = {};
@@ -171,9 +184,29 @@ export default class ImageTool {
   save() {
     const imageLink = this.ui.nodes.imageLink;
 
-    this._data.imageLink = imageLink.innerHTML;
-
+    this._data.imageLink = imageLink.innerHTML || '';
+    this._data.imageTags = [ ...this.imageTags ];
     return this.data;
+  }
+
+  /**
+   * Adding image tags
+   * @public
+   *
+   * @param {object} - tag
+   */
+  addImageTag(tag) {
+    this.imageTags.push(tag);
+  }
+
+  /**
+   * Removing image tags
+   * @public
+   *
+   * @param {object} - tag position
+   */
+  removeImageTag({ top, left }) {
+    this.imageTags = this.imageTags.filter(t => t.left !== left && t.top !== top);
   }
 
   /**

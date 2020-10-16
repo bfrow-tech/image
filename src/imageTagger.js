@@ -1,10 +1,15 @@
 import { make } from './ui';
 
-let users = [];
 let userEndpoint;
-const tagPosition = {};
-let tags = [];
+let imageContainer;
 let overlayElement;
+let uiInstance;
+let addTag;
+let getTags;
+let removeImageTag;
+
+let users = [];
+const tagPosition = {};
 
 const removeAllChildElements = (parentElement) => {
   while (parentElement.firstChild) {
@@ -62,7 +67,7 @@ const makeTagButtons = () => {
   return buttonWrapper;
 };
 
-const makeTag = ({ id, top, left, tagType, title, thumbnail, username }) => {
+const makeTag = ({ top, left, tagType, title, thumbnail, username }) => {
   const tagContainer = make('div', 'tooltip-wrapper', {
     style: `top: ${top}px; left: ${left}px`
   });
@@ -81,7 +86,7 @@ const makeTag = ({ id, top, left, tagType, title, thumbnail, username }) => {
 
   const removeTagIcon = make('span', 'rm-tag-btn', { innerHTML: '&times;' });
 
-  removeTagIcon.addEventListener('click', removeTag(id));
+  removeTagIcon.addEventListener('click', removeTag({ top, left }));
   tagContent.append(tagImage, tagTitle, removeTagIcon);
   tagContainer.append(caretIcon, tagContent);
   return tagContainer;
@@ -96,13 +101,13 @@ const makeLinkTagInput = (e) => {
 
   tagInput.addEventListener('keydown', ({ key }) => {
     if (key === 'Enter') {
-      const currentTag = {
+      const tag = {
         ...tagPosition,
         tagType: 'link',
         title: tagInput.value
       };
 
-      tags.push(currentTag);
+      addTag(tag);
       renderTags();
     }
   });
@@ -165,12 +170,12 @@ const selectUser = ({ displayName, nickname, image }) => (e) => {
     thumbnail: image.small
   };
 
-  tags.push(tag);
-  renderTags(overlayElement);
+  addTag(tag);
+  renderTags();
 };
 
-const removeTag = (id) => {
-  tags = tags.filter((t) => t.id !== id);
+const removeTag = (position) => {
+  removeImageTag(position);
   return (e) => {
     e.stopPropagation();
     e.currentTarget.parentElement.parentElement.remove();
@@ -178,15 +183,17 @@ const removeTag = (id) => {
 };
 
 const renderTags = () => {
+  const tags = getTags();
   const tagElements = tags.map((t) => makeTag(t));
 
-  overlayElement.parentElement.append(...tagElements);
-  overlayElement.remove();
+  imageContainer.append(...tagElements);
+
+  if (overlayElement) {
+    overlayElement.remove();
+  }
 };
 
-export const getTags = () => tags;
-
-export const toggleTagsDisplay = (currentTags) => (e) => {
+export const toggleTagsDisplay = (e) => {
   const displayedTags = e.currentTarget.querySelectorAll('.tooltip-wrapper');
 
   displayedTags.forEach((t) =>
@@ -194,14 +201,43 @@ export const toggleTagsDisplay = (currentTags) => (e) => {
   );
 };
 
-export const initializeUserData = (u) => {
-  userEndpoint = u.endpoint;
-  users = u.data;
-};
-
 const searchUsers = async (searchValue) => {
   const endpoint = `${userEndpoint}?query=${searchValue}&limit=10&page=1`;
   const { result: { data } } = await fetch(endpoint).then(res => res.json());
 
   return data;
+};
+
+const startImageTagging = () => {
+  if (uiInstance.currentStatus === 'FILLED') {
+    const hasOverlay = !!imageContainer.querySelector('.image-overlay');
+
+    if (hasOverlay) {
+      overlayElement.remove();
+    } else {
+      const { height, width } = imageContainer.querySelector('.image-tool__image-picture');
+      const tagOverlay = addOverlay(height, width);
+
+      imageContainer.appendChild(tagOverlay);
+    }
+  }
+};
+
+export const initImageTagging = (options) => {
+  imageContainer = options.uiInstance.nodes.imageContainer;
+  uiInstance = options.uiInstance;
+  users = options.users.data;
+  userEndpoint = options.users.endpoint;
+  addTag = options.addTag;
+  getTags = options.getTags;
+  removeImageTag = options.removeImageTag;
+
+  imageContainer.addEventListener('dblclick', startImageTagging);
+  imageContainer.addEventListener('click', toggleTagsDisplay);
+
+  const tags = getTags();
+
+  if (tags.length > 0) {
+    renderTags();
+  }
 };
