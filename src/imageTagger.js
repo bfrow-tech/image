@@ -11,11 +11,24 @@ let removeImageTag;
 let users = [];
 const tagPosition = {};
 
+// util functions
+const removeSpecialChars = (s) => {
+  // eslint-disable-next-line no-useless-escape
+  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+
 const removeAllChildElements = (parentElement) => {
   while (parentElement.firstChild) {
     parentElement.firstChild.remove();
   }
 };
+
+const filterUsers = (val) =>
+  users.filter((u) => {
+    const matchVal = new RegExp(removeSpecialChars(val), 'i');
+
+    return u.fullName.match(matchVal);
+  });
 
 export const addOverlay = (height, width) => {
   const overlay = make('div', 'image-overlay', {
@@ -137,7 +150,8 @@ const makeUserTagInput = (e) => {
 const renderDropdown = (dropdownWrapper) => {
   return async (e) => {
     removeAllChildElements(dropdownWrapper);
-    const results = await searchUsers(e.currentTarget.value);
+    const query = e.currentTarget.value;
+    const results = userEndpoint ? await searchUsers(query) : filterUsers(query);
 
     const dropdownItems = results.map((u) => makeDropdownItems(u));
 
@@ -175,9 +189,9 @@ const selectUser = ({ displayName, nickname, image }) => (e) => {
 };
 
 const removeTag = (position) => {
-  removeImageTag(position);
   return (e) => {
     e.stopPropagation();
+    removeImageTag(position);
     e.currentTarget.parentElement.parentElement.remove();
   };
 };
@@ -193,7 +207,7 @@ const renderTags = () => {
   }
 };
 
-export const toggleTagsDisplay = (e) => {
+const toggleTagsDisplay = (e) => {
   const displayedTags = e.currentTarget.querySelectorAll('.tooltip-wrapper');
 
   displayedTags.forEach((t) =>
@@ -226,7 +240,7 @@ const startImageTagging = () => {
 export const initImageTagging = (options) => {
   imageContainer = options.uiInstance.nodes.imageContainer;
   uiInstance = options.uiInstance;
-  users = options.users.data;
+  users = options.users.data || [];
   userEndpoint = options.users.endpoint;
   addTag = options.addTag;
   getTags = options.getTags;
@@ -235,7 +249,7 @@ export const initImageTagging = (options) => {
   imageContainer.addEventListener('dblclick', startImageTagging);
   imageContainer.addEventListener('click', toggleTagsDisplay);
 
-  const tags = getTags();
+  const tags = getTags() || [];
 
   if (tags.length > 0) {
     renderTags();
