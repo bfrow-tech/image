@@ -46,8 +46,6 @@ const setTagPosition = (e) => {
   const { currentTarget, clientX, clientY } = e;
   let rect = currentTarget.getBoundingClientRect();
 
-  // console.log(parseInt(currentTarget.style.width, 10));
-  // console.log(Math.floor(clientX - rect.left));
   tagPosition.top = Math.floor(clientY - rect.top);
   tagPosition.left = Math.floor(clientX - rect.left);
 
