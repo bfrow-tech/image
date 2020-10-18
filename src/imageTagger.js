@@ -10,6 +10,7 @@ let removeImageTag;
 
 let users = [];
 const tagPosition = {};
+const LINK_ICON = 'https://library.kissclipart.com/20191101/ebq/kissclipart-build-icon-chain-icon-link-icon-7ff0ec01bbee0a7b.png';
 
 // util functions
 const removeSpecialChars = (s) => {
@@ -87,9 +88,7 @@ const makeTag = ({ top, left, tagType, title, thumbnail, username }) => {
   const caretIcon = make('span', 'tooltip-caret');
   const tagContent = make('div', 'tooltip-content');
 
-  const src =
-    thumbnail ||
-    'https://library.kissclipart.com/20191101/ebq/kissclipart-build-icon-chain-icon-link-icon-7ff0ec01bbee0a7b.png';
+  const src = tagType === 'user' ? thumbnail : LINK_ICON;
   const tagImage = make('img', null, { src });
 
   const tagTitle = make('a', null, {
@@ -162,9 +161,9 @@ const renderDropdown = (dropdownWrapper) => {
 };
 
 const makeDropdownItems = (user) => {
-  const src = user.image ? user.image.small : '';
+  const imageUrl = user.image ? user.image.small : '';
   const dropdownItem = make('li');
-  const dropdownImage = make('img', 'dropdown-img', { src });
+  const dropdownImage = make('img', 'dropdown-img', { src: imageUrl });
   const fullName = make('span', 'full-name', { textContent: user.displayName });
   const username = make('span', 'username', { textContent: user.nickname });
 
@@ -176,12 +175,13 @@ const makeDropdownItems = (user) => {
 
 const selectUser = ({ displayName, nickname, image }) => (e) => {
   e.stopPropagation();
+  const imageUrl = image ? image.small : '';
   const tag = {
     ...tagPosition,
     tagType: 'user',
     title: displayName,
     username: nickname,
-    thumbnail: image.small
+    thumbnail: imageUrl
   };
 
   addTag(tag);
