@@ -2,58 +2,6 @@
   box-sizing: border-box;
 }
 
-.icon-placeholder {
-  height: 20px;
-  width: 20px;
-  border-radius: 100%;
-  background-color: #000000;
-}
-
-.image-wrapper {
-  position: relative;
-  margin-top: 50px;
-}
-
-.image-wrapper input {
-  width: 100%;
-  height: 40px;
-  font-size: 22px;
-  padding: 0 7px;
-  outline: none;
-  border: none;
-  border-radius: 5px;
-  transition: all .5s ease;
-}
-
-.image-wrapper img {
-  max-width: 100%;
-  margin-bottom: 15px;
-}
-
-.image-wrapper [contenteditable] {
-  width: 100%;
-  height: 40px;
-  border: 1px solid #e3e3e3;
-  font-size: 22px;
-  padding: 7px;
-  border-radius: 5px;
-}
-
-.image-wrapper.withBorder img {
-  border: 5px solid #e8e8eb;
-}
-
-.image-wrapper.withBackground {
-  background: #678eb5;
-  padding: 20px;
-}
-
-.image-wrapper.withBackground img {
-  display: block;
-  max-width: 60%;
-  margin: 0 auto 15px;
-}
-
 .image-overlay {
   position: absolute;
   display: block;
@@ -124,7 +72,6 @@
   display: flex;
   flex-direction: column;
   position: absolute;
-  z-index: 1000;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -138,7 +85,7 @@
   display: flex;
   background: #000000c7;
   border-radius: 40px;
-  width: 155px;
+  max-width: 155px;
   height: 40px;
   transition: all .5s ease;
   justify-content: space-between;
@@ -150,11 +97,10 @@
 }
 
 .tooltip-content a, .tooltip-content a:visited {
-  margin: 5px;
+  margin: 3px;
   white-space: nowrap;
   color: #fff;
   text-decoration: none;
-  text-transform: uppercase;
   text-overflow: ellipsis;
   overflow: hidden;
 }
@@ -177,7 +123,7 @@
 }
 
 .tooltip-content .rm-tag-btn:hover {
-  color: red;
+  color: #ff0000;
 }
 
 .display {
@@ -198,39 +144,19 @@
 }
 
 .tag-btn {
-  background: #9b7a80;
+  background: #2b2a2a;
   border: none;
-  border-radius: 4px;
   color: #fff;
+  text-transform: uppercase;
   padding: 15px;
   font-weight: bolder;
   cursor: pointer;
 }
 
 .tag-btn:hover {
-  background: #ba959c;
+  background: #333333;
 }
 
 .tag-btn:first-child {
   margin-right: 15px;
-}
-
-.tag-toggle-btn-wrapper {
-  position: absolute;
-  bottom: 13%;
-  left: 10px;
-}
-
-.tag-toggle-btn-wrapper button {
-  background: #000000eb;
-  height: 30px;
-  width: 30px;
-  border: none;
-  cursor: pointer;
-  border: 2px solid #fff;
-  border-radius: 50%;
-}
-
-.tag-toggle-btn-wrapper button:first-child {
-  margin-right: 5px;
 }
