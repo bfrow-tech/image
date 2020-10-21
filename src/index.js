@@ -160,7 +160,8 @@ export default class ImageTool {
       users: this.config.users || {},
       addTag: this.addImageTag.bind(this),
       getTags: () => this._data.imageTags,
-      removeImageTag: this.removeImageTag.bind(this)
+      removeImageTag: this.removeImageTag.bind(this),
+      listeners: this.api.listeners
     });
   }
 

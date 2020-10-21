@@ -7,6 +7,7 @@ let uiInstance;
 let addTag;
 let getTags;
 let removeImageTag;
+let listeners;
 
 let users = [];
 const tagPosition = {};
@@ -36,7 +37,7 @@ export const addOverlay = (height, width) => {
     style: `width: ${width}px; height: ${height}px;`
   });
 
-  overlay.addEventListener('click', setTagPosition);
+  listeners.on(overlay, 'click', setTagPosition, false);
   overlayElement = overlay;
   return overlay;
 };
@@ -60,17 +61,15 @@ const makeTagButtons = () => {
   const buttons = ['user', 'link'].map((t) => {
     const button = make('button', 'tag-btn', { textContent: `Tag ${t}` });
 
-    button.addEventListener(
-      'click',
-      ((tagType) => {
-        if (tagType == 'user') {
-          return makeUserTagInput;
-        }
-        if (tagType == 'link') {
-          return makeLinkTagInput;
-        }
-      })(t)
-    );
+    listeners.on(button, 'click', ((tagType) => {
+      if (tagType == 'user') {
+        return makeUserTagInput;
+      }
+      if (tagType == 'link') {
+        return makeLinkTagInput;
+      }
+    })(t), false);
+
     return button;
   });
 
@@ -96,7 +95,7 @@ const makeTag = ({ top, left, tagType, title, thumbnail, username }) => {
 
   const removeTagIcon = make('span', 'rm-tag-btn', { innerHTML: '&times;' });
 
-  removeTagIcon.addEventListener('click', removeTag({ top, left }));
+  listeners.on(removeTagIcon, 'click', removeTag({ top, left }), false);
   tagContent.append(tagImage, tagTitle, removeTagIcon);
   tagContainer.append(caretIcon, tagContent);
   return tagContainer;
@@ -109,7 +108,7 @@ const makeLinkTagInput = (e) => {
     autofocus: 'autofocus'
   });
 
-  tagInput.addEventListener('keydown', ({ key }) => {
+  listeners.on(tagInput, 'keydown', ({ key }) => {
     if (key === 'Enter') {
       const tag = {
         ...tagPosition,
@@ -120,10 +119,10 @@ const makeLinkTagInput = (e) => {
       addTag(tag);
       renderTags();
     }
-  });
+  }, false);
 
   // click event bubbling resets tag position
-  tagInput.addEventListener('click', (event) => event.stopPropagation());
+  listeners.on(tagInput, 'click', (event) => event.stopPropagation(), false);
 
   overlayElement.appendChild(tagInput);
 };
@@ -134,12 +133,12 @@ const makeUserTagInput = (e) => {
     type: 'text',
     autofocus: 'autofocus'
   });
-  const dropdown = make('div', 'dropdown');
+  const dropdownContainer = make('div', 'dropdown');
 
-  tagInput.addEventListener('keydown', renderDropdown(dropdown));
+  listeners.on(tagInput, 'keydown', renderDropdown(dropdownContainer), false);
 
   // click event bubbling resets tag position
-  tagInput.addEventListener('click', (event) => event.stopPropagation());
+  listeners.on(tagInput, 'click', (event) => event.stopPropagation(), false);
 
   overlayElement.appendChild(tagInput);
 };
@@ -166,7 +165,7 @@ const makeDropdownItems = (user) => {
   const username = make('span', 'username', { textContent: user.nickname });
 
   dropdownItem.append(dropdownImage, fullName, username);
-  dropdownItem.addEventListener('click', selectUser(user));
+  listeners.on(dropdownItem, 'click', selectUser(user), false);
 
   return dropdownItem;
 };
@@ -214,10 +213,14 @@ const toggleTagsDisplay = (e) => {
 };
 
 const searchUsers = async (searchValue) => {
-  const endpoint = `${userEndpoint}?query=${searchValue}&limit=10&page=1`;
-  const { result: { data } } = await fetch(endpoint).then(res => res.json());
+  try {
+    const endpoint = `${userEndpoint}?query=${searchValue}&limit=10&page=1`;
+    const { result: { data } } = await fetch(endpoint).then(res => res.json());
 
-  return data;
+    return data;
+  } catch (error) {
+    return error;
+  }
 };
 
 const startImageTagging = () => {
@@ -243,9 +246,10 @@ export const initImageTagging = (options) => {
   addTag = options.addTag;
   getTags = options.getTags;
   removeImageTag = options.removeImageTag;
+  listeners = options.listeners;
 
-  imageContainer.addEventListener('dblclick', startImageTagging);
-  imageContainer.addEventListener('click', toggleTagsDisplay);
+  listeners.on(imageContainer, 'dblclick', startImageTagging);
+  listeners.on(imageContainer, 'click', toggleTagsDisplay);
 
   const tags = getTags() || [];
 
