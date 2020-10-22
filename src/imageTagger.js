@@ -223,7 +223,7 @@ const searchUsers = async (searchValue) => {
   }
 };
 
-const startImageTagging = () => {
+export const startImageTagging = () => {
   if (uiInstance.currentStatus === 'FILLED') {
     const hasOverlay = !!imageContainer.querySelector('.image-overlay');
 
@@ -238,6 +238,10 @@ const startImageTagging = () => {
   }
 };
 
+const removeOverlay = () => {
+  if (overlayElement) overlayElement.remove();
+};
+
 export const initImageTagging = (options) => {
   imageContainer = options.uiInstance.nodes.imageContainer;
   uiInstance = options.uiInstance;
@@ -248,7 +252,7 @@ export const initImageTagging = (options) => {
   removeImageTag = options.removeImageTag;
   listeners = options.listeners;
 
-  listeners.on(imageContainer, 'dblclick', startImageTagging);
+  listeners.on(imageContainer, 'dblclick', removeOverlay);
   listeners.on(imageContainer, 'click', toggleTagsDisplay);
 
   const tags = getTags() || [];

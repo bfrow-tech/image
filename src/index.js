@@ -48,7 +48,7 @@ import ToolboxIcon from './svg/toolbox.svg';
 import Uploader from './uploader';
 
 import './imageTagger.css';
-import { initImageTagging } from './imageTagger';
+import { initImageTagging, startImageTagging } from './imageTagger';
 
 /**
  * @typedef {object} ImageConfig
@@ -403,6 +403,10 @@ export default class ImageTool {
       }).catch(err => {
         console.error(err);
       });
+    }
+
+    if (value && tuneName === 'imageTag') {
+      startImageTagging();
     }
   }
 

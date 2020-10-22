@@ -2,6 +2,7 @@ import { make } from './ui';
 import bgIcon from './svg/background.svg';
 import borderIcon from './svg/border.svg';
 import stretchedIcon from './svg/stretched.svg';
+import tagIcon from './svg/tag.svg';
 
 /**
  * Working with Block Tunes
@@ -36,6 +37,11 @@ export default class Tunes {
         name: 'withBackground',
         icon: bgIcon,
         title: 'With background'
+      },
+      {
+        name: 'imageTag',
+        icon: tagIcon,
+        title: 'Tag image'
       }
     ];
   }
