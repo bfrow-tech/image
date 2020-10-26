@@ -11,7 +11,8 @@ let listeners;
 
 let users = [];
 const tagPosition = {};
-const LINK_ICON = 'https://library.kissclipart.com/20191101/ebq/kissclipart-build-icon-chain-icon-link-icon-7ff0ec01bbee0a7b.png';
+const LINK_ICON =
+  'https://library.kissclipart.com/20191101/ebq/kissclipart-build-icon-chain-icon-link-icon-7ff0ec01bbee0a7b.png';
 
 // util functions
 const removeSpecialChars = (s) => {
@@ -61,14 +62,19 @@ const makeTagButtons = () => {
   const buttons = ['user', 'link'].map((t) => {
     const button = make('button', 'tag-btn', { textContent: `Tag ${t}` });
 
-    listeners.on(button, 'click', ((tagType) => {
-      if (tagType == 'user') {
-        return makeUserTagInput;
-      }
-      if (tagType == 'link') {
-        return makeLinkTagInput;
-      }
-    })(t), false);
+    listeners.on(
+      button,
+      'click',
+      ((tagType) => {
+        if (tagType == 'user') {
+          return makeUserTagInput;
+        }
+        if (tagType == 'link') {
+          return makeLinkTagInput;
+        }
+      })(t),
+      false
+    );
 
     return button;
   });
@@ -108,18 +114,23 @@ const makeLinkTagInput = (e) => {
     autofocus: 'autofocus'
   });
 
-  listeners.on(tagInput, 'keydown', ({ key }) => {
-    if (key === 'Enter') {
-      const tag = {
-        ...tagPosition,
-        tagType: 'link',
-        title: tagInput.value
-      };
+  listeners.on(
+    tagInput,
+    'keydown',
+    ({ key }) => {
+      if (key === 'Enter') {
+        const tag = {
+          ...tagPosition,
+          tagType: 'link',
+          title: tagInput.value
+        };
 
-      addTag(tag);
-      renderTags();
-    }
-  }, false);
+        addTag(tag);
+        renderTags();
+      }
+    },
+    false
+  );
 
   // click event bubbling resets tag position
   listeners.on(tagInput, 'click', (event) => event.stopPropagation(), false);
@@ -147,7 +158,9 @@ const renderDropdown = (dropdownWrapper) => {
   return async (e) => {
     removeAllChildElements(dropdownWrapper);
     const query = e.currentTarget.value;
-    const results = userEndpoint ? await searchUsers(query) : filterUsers(query);
+    const results = userEndpoint
+      ? await searchUsers(query)
+      : filterUsers(query);
 
     const dropdownItems = results.map((u) => makeDropdownItems(u));
 
@@ -215,7 +228,9 @@ const toggleTagsDisplay = (e) => {
 const searchUsers = async (searchValue) => {
   try {
     const endpoint = `${userEndpoint}?query=${searchValue}&limit=10&page=1`;
-    const { result: { data } } = await fetch(endpoint).then(res => res.json());
+    const {
+      result: { data }
+    } = await fetch(endpoint).then((res) => res.json());
 
     return data;
   } catch (error) {
@@ -230,7 +245,9 @@ export const startImageTagging = () => {
     if (hasOverlay) {
       overlayElement.remove();
     } else {
-      const { height, width } = imageContainer.querySelector('.image-tool__image-picture');
+      const { height, width } = imageContainer.querySelector(
+        '.image-tool__image-picture'
+      );
       const tagOverlay = addOverlay(height, width);
 
       imageContainer.appendChild(tagOverlay);
