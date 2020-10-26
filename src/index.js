@@ -407,6 +407,7 @@ export default class ImageTool {
 
     if (value && tuneName === 'imageTag') {
       startImageTagging();
+      this._data.imageTag = false;
     }
   }
 
