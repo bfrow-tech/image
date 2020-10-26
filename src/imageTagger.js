@@ -47,8 +47,8 @@ const setTagPosition = (e) => {
   const { currentTarget, clientX, clientY } = e;
   let rect = currentTarget.getBoundingClientRect();
 
-  tagPosition.top = Math.floor(clientY - rect.top);
-  tagPosition.left = Math.floor(clientX - rect.left);
+  tagPosition.top = `${Math.round(Math.floor(clientY - rect.top) / rect.height * 100)}%`;
+  tagPosition.left = `${Math.round(Math.floor(clientX - rect.left) / rect.width * 100)}%`;
 
   const tagButtons = makeTagButtons();
 
@@ -80,7 +80,7 @@ const makeTagButtons = () => {
 
 const makeTag = ({ top, left, tagType, title, thumbnail, username }) => {
   const tagContainer = make('div', 'tooltip-wrapper', {
-    style: `top: ${top}px; left: ${left}px`
+    style: `top: ${top}; left: ${left}`
   });
   const caretIcon = make('span', 'tooltip-caret');
   const tagContent = make('div', 'tooltip-content');
