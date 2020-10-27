@@ -83,10 +83,9 @@
   padding: 5px 5px 0 5px; 
   color: #fff;
   display: flex;
-  background: #000000c7;
+  background: #FFFFFF;
   border-radius: 40px;
   max-width: 155px;
-  height: 40px;
   transition: all .5s ease;
   justify-content: space-between;
 }
@@ -96,10 +95,14 @@
   border-radius: 50%;
 }
 
+.tooltip-content svg {
+  margin-left: 2px;
+}
+
 .tooltip-content a, .tooltip-content a:visited {
   margin: 3px;
   white-space: nowrap;
-  color: #fff;
+  color: #000;
   text-decoration: none;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -109,8 +112,8 @@
   width: 0;
   height: 0;
   display: inline-block;
-  border: 15px solid transparent;
-  border-bottom-color: #000000c7;
+  border: 10px solid transparent;
+  border-bottom-color: #FFFFFF;
   margin-left: 5px;
   align-self: center;
 }
@@ -118,12 +121,11 @@
 .tooltip-content .rm-tag-btn {
   color: #b8b1b1;
   font-size: 22px;
-  font-weight: bolder;
   margin: 0 5px 0 0;
 }
 
 .tooltip-content .rm-tag-btn:hover {
-  color: #ff0000;
+  color: #000;
 }
 
 .display {

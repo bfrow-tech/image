@@ -1,4 +1,6 @@
 import { make } from './ui';
+import LINK_ICON from './svg/link.svg';
+import USER_ICON from './svg/user.svg';
 
 let userEndpoint;
 let imageContainer;
@@ -11,8 +13,6 @@ let listeners;
 
 let users = [];
 const tagPosition = {};
-const LINK_ICON =
-  'https://library.kissclipart.com/20191101/ebq/kissclipart-build-icon-chain-icon-link-icon-7ff0ec01bbee0a7b.png';
 
 // util functions
 const removeSpecialChars = (s) => {
@@ -84,19 +84,32 @@ const makeTagButtons = () => {
   return buttonWrapper;
 };
 
+const createTagImage = (tagType, imageUrl) => {
+  if (tagType === 'user') {
+    const tagImage = typeof imageUrl === 'string'
+      ? make('img', null, { src: imageUrl })
+      : make('span', null, { innerHTML: USER_ICON });
+
+    return tagImage;
+  }
+
+  if (tagType === 'link') {
+    return make('span', null, { innerHTML: LINK_ICON });
+  }
+};
+
 const makeTag = ({ top, left, tagType, title, thumbnail, username }) => {
   const tagContainer = make('div', 'tooltip-wrapper', {
     style: `top: ${top}; left: ${left}`
   });
   const caretIcon = make('span', 'tooltip-caret');
   const tagContent = make('div', 'tooltip-content');
-
-  const src = tagType === 'user' ? thumbnail : LINK_ICON;
-  const tagImage = make('img', null, { src });
+  const tagImage = createTagImage(tagType, thumbnail);
 
   const tagTitle = make('a', null, {
-    href: tagType === 'link' ? title : `https://bfrow.com/${username}`,
-    textContent: title || username
+    href: tagType === 'link' ? title : `https://bfrow.com/user/${username}`,
+    textContent: title || username,
+    target: '_blank'
   });
 
   const removeTagIcon = make('span', 'rm-tag-btn', { innerHTML: '&times;' });
