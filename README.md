@@ -14,6 +14,7 @@ Image Block for the [Editor.js](https://editorjs.io).
 - Pasting files and screenshots from Clipboard
 - Allows to add border, background
 - Allows to stretch image to the container's full-width
+- Allows to tag people on image
 
 **Note** This Tool requires server-side implementation for file uploading. See [backend response format](#server-format) for more details.
 
@@ -70,7 +71,11 @@ var editor = EditorJS({
           byFile: 'http://localhost:8008/uploadFile', // Your backend file uploader endpoint
           byUrl: 'http://localhost:8008/fetchUrl', // Your endpoint that provides uploading by Url
         }
-      }
+      },
+      users: {
+          endpoint: 'USER QUERY ENDPOINT',
+          data: [],
+      },
     }
   }
 
@@ -116,6 +121,7 @@ This Tool returns `data` with following format
 | withBorder     | `boolean` | add border to image             |
 | withBackground | `boolean` | need to add background          |
 | stretched      | `boolean` | stretch image to screen's width |
+| imageTags      | `array` | An array of image tag |
 
 
 ```json
@@ -128,7 +134,8 @@ This Tool returns `data` with following format
         "caption" : "Roadster // tesla.com",
         "withBorder" : false,
         "withBackground" : false,
-        "stretched" : true
+        "stretched" : true,
+        "imageTags" : []
     }
 }
 ```

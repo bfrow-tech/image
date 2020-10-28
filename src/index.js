@@ -47,6 +47,9 @@ import Tunes from './tunes';
 import ToolboxIcon from './svg/toolbox.svg';
 import Uploader from './uploader';
 
+import './imageTagger.css';
+import { initImageTagging, startImageTagging } from './imageTagger';
+
 /**
  * @typedef {object} ImageConfig
  * @description Config supported by Tool
@@ -107,7 +110,8 @@ export default class ImageTool {
       types: config.types || 'image/*',
       imageLinkPlaceholder: config.imageLinkPlaceholder || 'Add a link to the image if required',
       buttonContent: config.buttonContent || '',
-      uploader: config.uploader || undefined
+      uploader: config.uploader || undefined,
+      users: config.users || {}
     };
 
     /**
@@ -147,6 +151,18 @@ export default class ImageTool {
      */
     this._data = {};
     this.data = data;
+
+    /**
+     * Initialize image tagging feature
+     */
+    initImageTagging({
+      uiInstance: this.ui,
+      users: this.config.users || {},
+      addTag: this.addImageTag.bind(this),
+      getTags: () => this._data.imageTags,
+      removeImageTag: this.removeImageTag.bind(this),
+      listeners: this.api.listeners
+    });
   }
 
   /**
@@ -168,9 +184,28 @@ export default class ImageTool {
   save() {
     const imageLink = this.ui.nodes.imageLink;
 
-    this._data.imageLink = imageLink.innerHTML;
-
+    this._data.imageLink = imageLink.innerHTML || '';
     return this.data;
+  }
+
+  /**
+   * Adding image tags
+   * @public
+   *
+   * @param {object} - tag
+   */
+  addImageTag(tag) {
+    this._data.imageTags.push(tag);
+  }
+
+  /**
+   * Removing image tags
+   * @public
+   *
+   * @param {object} - tag position
+   */
+  removeImageTag({ top, left }) {
+    this._data.imageTags = this._data.imageTags.filter(t => t.left !== left && t.top !== top);
   }
 
   /**
@@ -273,6 +308,7 @@ export default class ImageTool {
 
     this._data.imageLink = data.imageLink || '';
     this.ui.fillImageLink(this._data.imageLink);
+    this._data.imageTags = data.imageTags || [];
 
     Tunes.tunes.forEach(({ name: tune }) => {
       const value = typeof data[tune] !== 'undefined' ? data[tune] === true || data[tune] === 'true' : false;
@@ -367,6 +403,11 @@ export default class ImageTool {
       }).catch(err => {
         console.error(err);
       });
+    }
+
+    if (value && tuneName === 'imageTag') {
+      startImageTagging();
+      this._data.imageTag = false;
     }
   }
 

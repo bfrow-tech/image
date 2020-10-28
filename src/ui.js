@@ -87,6 +87,21 @@ export default class Ui {
   }
 
   /**
+   * Get the current UI status
+   */
+  get currentStatus() {
+    for (const statusType in Ui.status) {
+      const hasStatusType = this.nodes.wrapper.classList.contains(
+        `${this.CSS.wrapper}--${Ui.status[statusType]}`
+      );
+
+      if (hasStatusType) {
+        return statusType;
+      }
+    }
+  }
+
+  /**
    * @param {ImageToolData} toolData
    * @return {HTMLDivElement}
    */
@@ -107,7 +122,8 @@ export default class Ui {
   createFileButton() {
     let button = make('div', [ this.CSS.button ]);
 
-    button.innerHTML = this.config.buttonContent || `${buttonIcon} Upload your image`;
+    button.innerHTML =
+      this.config.buttonContent || `${buttonIcon} Upload your image`;
 
     button.addEventListener('click', () => {
       this.onSelectFile();
@@ -212,7 +228,10 @@ export default class Ui {
   toggleStatus(status) {
     for (const statusType in Ui.status) {
       if (Ui.status.hasOwnProperty(statusType)) {
-        this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${Ui.status[statusType]}`, status === Ui.status[statusType]);
+        this.nodes.wrapper.classList.toggle(
+          `${this.CSS.wrapper}--${Ui.status[statusType]}`,
+          status === Ui.status[statusType]
+        );
       }
     }
   }
@@ -223,7 +242,10 @@ export default class Ui {
    * @param {boolean} status - true for enable, false for disable
    */
   applyTune(tuneName, status) {
-    this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${tuneName}`, status);
+    this.nodes.wrapper.classList.toggle(
+      `${this.CSS.wrapper}--${tuneName}`,
+      status
+    );
   }
 }
 
