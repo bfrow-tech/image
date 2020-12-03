@@ -219,8 +219,51 @@ const removeTag = (position) => {
   };
 };
 
-const renderTags = () => {
+const toggleTags = (tagType) => {
+  const displayedTags = imageContainer.querySelectorAll('.tooltip-wrapper');
+
+  displayedTags.forEach((t) => {
+    console.log(t);
+    t.classList.add('no-display');
+  }
+  );
+
   const tags = getTags();
+  const filteredTags = tags.filter(t => t.tagType === 'link');
+
+  console.log({ filteredTags });
+
+  renderTags(filteredTags);
+};
+
+const renderTagIcons = () => {
+  const iconWrapper = make('div', 'tag-icon-wrapper');
+
+  const userIcon = make('span', null, { innerHTML: USER_ICON });
+  const linkIcon = make('span', null, { innerHTML: LINK_ICON });
+
+  listeners.on(userIcon, 'click', (e) => {
+    e.stopPropagation();
+    console.log('Click works....');
+  }, false);
+
+  listeners.on(linkIcon, 'click', (e) => {
+    e.stopPropagation();
+    toggleTags('link');
+  }, false);
+
+  iconWrapper.append(linkIcon, userIcon);
+  imageContainer.appendChild(iconWrapper);
+};
+
+const renderTags = (filteredTags) => {
+  const tags = filteredTags || getTags();
+  const hasTagIcons = !!imageContainer.querySelector('.tag-icon-wrapper');
+
+  if (tags.length > 0 && !hasTagIcons) {
+    renderTagIcons();
+  }
+
   const tagElements = tags.map((t) => makeTag(t));
 
   imageContainer.append(...tagElements);

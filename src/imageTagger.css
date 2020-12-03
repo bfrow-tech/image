@@ -8,12 +8,13 @@
   width: 100%;
   height: 100%;
   top: 6px;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 3;
   cursor: pointer;
 }
 
-.tag-input, .dropdown {
+.tag-input,
+.dropdown {
   height: 40px;
   font-size: 22px;
   padding: 0 7px;
@@ -26,7 +27,7 @@
   left: 50%;
   z-index: 4;
   transform: translate(-50%, -50%);
-  transition: all .5s ease;
+  transition: all 0.5s ease;
 }
 
 .dropdown {
@@ -80,13 +81,13 @@
 }
 
 .tooltip-wrapper .tooltip-content {
-  padding: 5px 5px 0 5px; 
+  padding: 5px 5px 0 5px;
   color: #fff;
   display: flex;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 40px;
   max-width: 155px;
-  transition: all .5s ease;
+  transition: all 0.5s ease;
   justify-content: space-between;
 }
 
@@ -99,7 +100,8 @@
   margin-left: 2px;
 }
 
-.tooltip-content a, .tooltip-content a:visited {
+.tooltip-content a,
+.tooltip-content a:visited {
   margin: 3px;
   white-space: nowrap;
   color: #000;
@@ -113,7 +115,7 @@
   height: 0;
   display: inline-block;
   border: 10px solid transparent;
-  border-bottom-color: #FFFFFF;
+  border-bottom-color: #ffffff;
   margin-left: 5px;
   align-self: center;
 }
@@ -130,12 +132,12 @@
 
 .display {
   display: block;
-  transition: all .5s ease;
+  transition: all 0.5s ease;
 }
 
 .no-display {
   display: none !important;
-  transition: all .5s ease;
+  transition: all 0.5s ease;
 }
 
 .tag-btn-wrapper {
@@ -165,4 +167,19 @@
 
 .tag-btn:hover {
   background: #ba959c;
+}
+
+.tag-icon-wrapper {
+  color: #fff;
+  position: absolute;
+  top: 85%;
+  left: 5%;
+}
+
+.tag-icon-wrapper span {
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 5px;
+  background-color: #fff;
+  margin-right: 5px;
 }
