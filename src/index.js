@@ -48,7 +48,8 @@ import ToolboxIcon from './svg/toolbox.svg';
 import Uploader from './uploader';
 
 import './imageTagger.css';
-import { initImageTagging, startImageTagging } from './imageTagger';
+// import { ImageTagging, initImageTagging, startImageTagging } from './imageTagger';
+import { ImageTagging } from './imageTagger';
 
 /**
  * @typedef {object} ImageConfig
@@ -155,13 +156,22 @@ export default class ImageTool {
     /**
      * Initialize image tagging feature
      */
-    initImageTagging({
-      uiInstance: this.ui,
+    // initImageTagging({
+    //   uiInstance: this.ui,
+    //   users: this.config.users || {},
+    //   addTag: this.addImageTag.bind(this),
+    //   getTags: () => this._data.imageTags,
+    //   removeImageTag: this.removeImageTag.bind(this),
+    //   listeners: this.api.listeners
+    // });
+
+    this.imageTagging = new ImageTagging({
+      ui: this.ui,
       users: this.config.users || {},
+      listeners: this.api.listeners,
       addTag: this.addImageTag.bind(this),
       getTags: () => this._data.imageTags,
-      removeImageTag: this.removeImageTag.bind(this),
-      listeners: this.api.listeners
+      removeImageTag: this.removeImageTag.bind(this)
     });
   }
 
@@ -406,7 +416,7 @@ export default class ImageTool {
     }
 
     if (value && tuneName === 'imageTag') {
-      startImageTagging();
+      this.imageTagging.startImageTagging();
       this._data.imageTag = false;
     }
   }
