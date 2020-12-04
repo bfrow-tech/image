@@ -531,9 +531,9 @@ export class ImageTagging {
   createTagImage(tagType, imageUrl) {
     if (tagType === 'user') {
       const tagImage =
-        typeof imageUrl === 'string'
-          ? make('img', null, { src: imageUrl })
-          : make('span', null, { innerHTML: USER_ICON });
+       imageUrl && typeof imageUrl === 'string'
+         ? make('img', null, { src: imageUrl })
+         : make('span', null, { innerHTML: USER_ICON });
 
       return tagImage;
     }
@@ -603,7 +603,9 @@ export class ImageTagging {
   makeDropdownItems(user) {
     const imageUrl = user.image ? user.image.small : '';
     const dropdownItem = make('li');
-    const dropdownImage = make('img', 'dropdown-img', { src: imageUrl });
+    const dropdownImage = imageUrl
+      ? make('img', null, { src: imageUrl })
+      : make('span', 'dropdown-img', { innerHTML: USER_ICON });
     const fullName = make('span', 'full-name', { textContent: user.displayName });
     const username = make('span', 'username', { textContent: user.nickname });
 

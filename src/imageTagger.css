@@ -64,6 +64,17 @@
   border-radius: 50%;
 }
 
+.dropdown-img {
+  border: 1px solid #c4c4c4;
+  height: 40px;
+  width: 40px;
+  margin-left: 5px;
+  border-radius: 50%;
+  text-align: center;
+  background: #fff;
+  color: #fff;
+}
+
 .dropdown li .full-name {
   margin: 2px 10px;
 }
