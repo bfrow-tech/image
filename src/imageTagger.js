@@ -334,18 +334,14 @@ export class ImageTagging {
   /**
    * @param {object} ui - ui instance
    * @param {object} users - users data
+   * @param {array} savedTags - saved tags
    * @param {object} listeners - Editorjs api for event listeners
-   * @param {function} addTag - callback for adding a tag
-   * @param {function} getTag - callback for getting a tag
-   * @param {function} removeTag - callback for removing a tag
    */
-  constructor({ ui, users, listeners, addTag, getTags, removeImageTag }) {
+  constructor({ ui, users, savedTags = [], listeners }) {
     this.ui = ui;
-    this.users = users.data || [];
+    this.users = users.data;
     this.listeners = listeners;
-    this.addTag = addTag;
-    this.getTags = getTags;
-    this.removeTag = removeImageTag;
+    this.tags = savedTags;
 
     this.imageContainer = this.ui.nodes.imageContainer;
     this.userEndpoint = users.endpoint;
@@ -357,9 +353,7 @@ export class ImageTagging {
     this.listeners.on(this.imageContainer, 'dblclick', this.removeOverlay);
     this.listeners.on(this.imageContainer, 'click', this.toggleTagsDisplay);
 
-    const tags = this.getTags() || [];
-
-    if (tags.length > 0) {
+    if (this.tags.length > 0) {
       this.renderTags();
     }
   }
@@ -617,8 +611,7 @@ export class ImageTagging {
 
   /** render tags */
   renderTags() {
-    const tags = this.getTags();
-    const tagElements = tags.map((t) => this.makeTag(t));
+    const tagElements = this.tags.map((t) => this.makeTag(t));
 
     this.imageContainer.append(...tagElements);
 
@@ -626,4 +619,23 @@ export class ImageTagging {
       this.overlayElement.remove();
     }
   };
+
+  /** add tag */
+  addTag(tag) {
+    this.tags.push(tag);
+  }
+
+  /** get tags */
+  getTags() {
+    return this.tags;
+  }
+
+  /** remove tag */
+  removeTag({ top, left }) {
+    return (e) => {
+      e.stopPropagation();
+      this.tags = this.tags.filter(t => t.left !== left && t.top !== top);
+      e.currentTarget.parentElement.parentElement.remove();
+    };
+  }
 }

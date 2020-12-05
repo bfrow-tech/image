@@ -156,22 +156,11 @@ export default class ImageTool {
     /**
      * Initialize image tagging feature
      */
-    // initImageTagging({
-    //   uiInstance: this.ui,
-    //   users: this.config.users || {},
-    //   addTag: this.addImageTag.bind(this),
-    //   getTags: () => this._data.imageTags,
-    //   removeImageTag: this.removeImageTag.bind(this),
-    //   listeners: this.api.listeners
-    // });
-
     this.imageTagging = new ImageTagging({
       ui: this.ui,
       users: this.config.users || {},
       listeners: this.api.listeners,
-      addTag: this.addImageTag.bind(this),
-      getTags: () => this._data.imageTags,
-      removeImageTag: this.removeImageTag.bind(this)
+      savedTags: data.imageTags
     });
   }
 
@@ -195,27 +184,9 @@ export default class ImageTool {
     const imageLink = this.ui.nodes.imageLink;
 
     this._data.imageLink = imageLink.innerHTML || '';
+    this._data.imageTags = this.imageTagging.getTags();
+
     return this.data;
-  }
-
-  /**
-   * Adding image tags
-   * @public
-   *
-   * @param {object} - tag
-   */
-  addImageTag(tag) {
-    this._data.imageTags.push(tag);
-  }
-
-  /**
-   * Removing image tags
-   * @public
-   *
-   * @param {object} - tag position
-   */
-  removeImageTag({ top, left }) {
-    this._data.imageTags = this._data.imageTags.filter(t => t.left !== left && t.top !== top);
   }
 
   /**
@@ -318,7 +289,6 @@ export default class ImageTool {
 
     this._data.imageLink = data.imageLink || '';
     this.ui.fillImageLink(this._data.imageLink);
-    this._data.imageTags = data.imageTags || [];
 
     Tunes.tunes.forEach(({ name: tune }) => {
       const value = typeof data[tune] !== 'undefined' ? data[tune] === true || data[tune] === 'true' : false;
