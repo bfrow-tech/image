@@ -350,12 +350,18 @@ export class ImageTagging {
       left: 0
     };
 
-    this.listeners.on(this.imageContainer, 'dblclick', this.removeOverlay);
-    this.listeners.on(this.imageContainer, 'click', this.toggleTagsDisplay);
-
     if (this.tags.length > 0) {
       this.renderTags();
     }
+    this.listeners.on(this.imageContainer, 'dblclick', this.removeOverlay);
+    this.listeners.on(this.imageContainer, 'click', this.toggleTagsDisplay);
+
+    listeners.on(this.imageContainer, 'mouseenter', this.onMouseOver.bind(this));
+    listeners.on(this.imageContainer, 'mouseleave', () => {
+      const buttonOverlay = this.imageContainer.querySelector('.button-overlay');
+
+      if (buttonOverlay) buttonOverlay.remove();
+    });
   }
 
   /**
@@ -625,12 +631,12 @@ export class ImageTagging {
     this.tags.push(tag);
   }
 
-  /** get tags */
+  /** Get tags */
   getTags() {
     return this.tags;
   }
 
-  /** remove tag */
+  /** Remove tag */
   removeTag({ top, left }) {
     return (e) => {
       e.stopPropagation();
@@ -638,4 +644,19 @@ export class ImageTagging {
       e.currentTarget.parentElement.parentElement.remove();
     };
   }
+
+  /** Mouseover effect function */
+  onMouseOver(e) {
+    const tagButtons = this.makeTagButtons();
+    const { height, width } = this.imageContainer.querySelector('.image-tool__image-picture');
+    const buttonOverlay = make('div', 'button-overlay', {
+      style: `
+        width: ${width}px;
+        height: ${height}px;
+      `
+    });
+
+    buttonOverlay.appendChild(tagButtons);
+    this.imageContainer.appendChild(buttonOverlay);
+  };
 }
